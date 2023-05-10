@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .card{
+            width: 400px;
+            height: 500px;
+            border: 3px solid black;
+            margin-left: 5px;
+            margin-top: 5px;
+            float: left;
+            display: inline-block;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    {% for i in books %}
+        <div class="card">
+            <h1>Name Author: {{ i.name_author }}</h1>
+            <h3>Title: {{ i.title }}</h3>
+            <h3>Description: {{ i.description }}</h3>
+            <h2>Counts: {{ i.count }}</h2>
+            <h2>Price: {{ i.price }}</h2>
+            <h2>Date of publication: {{ i.date.date() }}</h2>
+            <a href="/book/{{ i.id }}">Подробнее</a>
+        </div>
+    {% endfor %}
+</body>
+</html>

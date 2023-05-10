@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .card{
+            width: 400px;
+            height: 500px;
+            border: 3px solid black;
+        }
+    </style>
+    <title>{{ book.title }}</title>
+</head>
+<body>
+        <div class="card">
+            <h1>Name Author: {{ book.name_author }}</h1>
+            <h3>Title: {{ book.title }}</h3>
+            <h3>Description: {{ book.description }}</h3>
+            <h2>Counts: {{ book.count }}</h2>
+            <h2>Price: {{ book.price }}</h2>
+            <h2>Date of publication: {{ book.date.date() }}</h2>
+            <a href="/book/{{ book.id }}/delete">Удалить</a>
+            <br>
+            <br>
+            <a href="/book/{{ book.id }}/update">Редактировать</a>
+        </div>
+        <br>
+        <a href="/books"><button><-- Назад</button></a>
+</body>
+</html>
