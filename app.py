@@ -1,13 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+from services.interface import *
 
 db = SQLAlchemy()
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///books.db"
 db.init_app(app)
 
+#-----------------------------------------------
+# Создаем экземпляр класса БД(Book)
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!!Хотел переместить класс book в services.database.books но не получилось :( !!!!
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name_author = db.Column(db.String, unique=False, nullable=False)
@@ -19,8 +23,12 @@ class Book(db.Model):
 
 with app.app_context():
     db.create_all()
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
+#-----------------------------------------------
+# Создаем книгу
+#-----------------------------------------------
 @app.route("/create", methods=["GET", "POST"])
 def book_create():
     if request.method == "POST":
@@ -37,19 +45,34 @@ def book_create():
             return redirect('/books')
         except:
             return 'При добавлении книги произошла ошибка'
-    return render_template("create.html")
+    return render_template("books/create.html")
+#-----------------------------------------------
 
+#-----------------------------------------------
+# Страница со всеми книгами
+#-----------------------------------------------
 @app.route("/books")
 def book_list():
     books = db.session.execute(db.select(Book).order_by(Book.name_author)).scalars()
-    return render_template("book.html", books=books)
+    return render_template(
+        template_name_or_list='books/book.html',
+        books=books
+    )
+#-----------------------------------------------
 
+#-----------------------------------------------
+# У каждой книги есть свой id
+#-----------------------------------------------
 @app.route("/book/<int:id>")
 def book_detail(id):
     book = db.get_or_404(Book, id)
-    return render_template("detail.html", book=book)
+    return render_template("books/detail.html", book=book)
+#-----------------------------------------------
 
 
+#-----------------------------------------------
+# Удаляем книгу
+#-----------------------------------------------
 @app.route("/book/<int:id>/delete", methods=["GET", "POST"])
 def book_delete(id):
     book = db.get_or_404(Book, id)
@@ -59,8 +82,12 @@ def book_delete(id):
         return redirect('/books')
     except:
         return "При удалении книги произошла ошибка"
+#-----------------------------------------------
 
 
+#-----------------------------------------------
+# Редактируем книгу
+#-----------------------------------------------
 @app.route("/book/<int:id>/update", methods=["GET", "POST"])
 def book_update(id):
     book = db.get_or_404(Book, id)
@@ -77,11 +104,12 @@ def book_update(id):
             except:
                 return 'При редактировании книги произошла ошибка'
             
-    return render_template("update.html", book=book)
+    return render_template("books/update.html", book=book)
+#-----------------------------------------------
 
 
 if __name__ == '__main__':
     app.run(
-        host='0.0.0.0',
-        port='4400'
+        host=HOST,
+        port=PORT
     )
